@@ -97,11 +97,11 @@ function DeviceDetailPage() {
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
               <button
                 type="button"
                 onClick={() => refetch()}
-                className="rounded-full border border-black/12 bg-white px-4 py-2 text-xs font-medium hover:border-black/30"
+                className="min-h-11 touch-manipulation rounded-full border border-black/12 bg-white px-4 text-xs font-medium hover:border-black/30"
               >
                 Refresh
               </button>
@@ -113,7 +113,7 @@ function DeviceDetailPage() {
                     revokeMutation.mutate();
                   }
                 }}
-                className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-4 py-2 text-xs font-medium text-red-700 hover:border-red-300 disabled:opacity-40"
+                className="inline-flex min-h-11 touch-manipulation items-center justify-center gap-2 rounded-full border border-red-200 bg-red-50 px-4 text-xs font-medium text-red-700 hover:border-red-300 disabled:opacity-40"
               >
                 <ShieldOff className="h-3.5 w-3.5" /> Revoke authorization
               </button>
@@ -147,10 +147,10 @@ function DeviceDetailPage() {
             </p>
           )}
 
-          <div className="mt-6 rounded-2xl border border-black/[0.07] bg-white p-5">
-            <div className="mb-5 flex items-center justify-between">
+          <div className="mt-6 rounded-2xl border border-black/[0.07] bg-white p-4 sm:p-5">
+            <div className="mb-5 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
               <p className="font-heading text-sm font-semibold">Remote animation controls</p>
-              <span className="font-mono text-[10px] text-muted-foreground">target: {device.device_id}</span>
+              <span className="truncate font-mono text-[10px] text-muted-foreground">target: {device.device_id}</span>
             </div>
             <DeviceControls
               device={device}

@@ -85,15 +85,13 @@ export default function DeviceTable({ devices }) {
 
       <div className="space-y-3 md:hidden">
         {devices.map((device) => (
-          <Link
+          <div
             key={device.id}
-            to="/devices/$deviceId"
-            params={{ deviceId: device.device_id }}
-            className="block rounded-2xl border border-black/[0.07] bg-white p-4"
+            className="rounded-2xl border border-black/[0.07] bg-white p-4"
           >
             <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="font-heading text-sm font-semibold">{device.nickname}</p>
+              <div className="min-w-0">
+                <p className="truncate font-heading text-sm font-semibold">{device.nickname}</p>
                 <p className="font-mono text-[11px] text-muted-foreground">{device.device_id}</p>
               </div>
               <StatusBadge status={device.online ? "online" : "offline"} />
@@ -106,7 +104,17 @@ export default function DeviceTable({ devices }) {
               <span>·</span>
               <span>{formatRelative(device.last_seen)}</span>
             </div>
-          </Link>
+            <div className="mt-3">
+              <AnimationCell device={device} />
+            </div>
+            <Link
+              to="/devices/$deviceId"
+              params={{ deviceId: device.device_id }}
+              className="mt-3 flex h-11 w-full touch-manipulation items-center justify-center gap-1.5 rounded-full bg-[#0B0B0C] text-sm font-medium text-white active:bg-primary"
+            >
+              Control <ChevronRight className="h-4 w-4" />
+            </Link>
+          </div>
         ))}
       </div>
     </>

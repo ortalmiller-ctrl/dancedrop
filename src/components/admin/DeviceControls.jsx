@@ -78,15 +78,15 @@ export default function DeviceControls({ device, characters = [], onDone }) {
         <div>
           <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Character</p>
           <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
-            {characters.map((item) => (
-              <button
-                key={item.slug}
-                type="button"
-                onClick={() => {
-                  setSlug(item.slug);
-                  if (!item.animations.includes(animation)) setAnimation(item.animations[0]);
-                }}
-                className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 text-left text-xs transition-colors ${
+          {characters.map((item) => (
+            <button
+              key={item.slug}
+              type="button"
+              onClick={() => {
+                setSlug(item.slug);
+                if (!item.animations.includes(animation)) setAnimation(item.animations[0]);
+              }}
+              className={`flex min-h-11 touch-manipulation items-center gap-2 rounded-xl border px-3 py-2.5 text-left text-xs transition-colors ${
                   character?.slug === item.slug
                     ? "border-[#0B0B0C] bg-[#0B0B0C] text-white"
                     : "border-black/10 bg-white hover:border-black/30"
@@ -110,7 +110,7 @@ export default function DeviceControls({ device, characters = [], onDone }) {
                 key={item.key}
                 type="button"
                 onClick={() => setAnimation(item.key)}
-                className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors ${
+                className={`min-h-10 touch-manipulation rounded-full border px-4 py-2.5 text-xs font-medium transition-colors ${
                   animation === item.key
                     ? "border-primary bg-primary text-white"
                     : "border-black/10 bg-white hover:border-black/30"
@@ -149,7 +149,7 @@ export default function DeviceControls({ device, characters = [], onDone }) {
                 key={item.key}
                 type="button"
                 onClick={() => setPosition(item.key)}
-                className={`rounded-lg border px-2.5 py-2 text-xs transition-colors ${
+                className={`min-h-11 touch-manipulation rounded-lg border px-2.5 py-2 text-xs transition-colors ${
                   position === item.key
                     ? "border-[#0B0B0C] bg-[#0B0B0C] text-white"
                     : "border-black/10 bg-white hover:border-black/30"
