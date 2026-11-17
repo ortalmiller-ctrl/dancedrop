@@ -1,0 +1,73 @@
+{
+  "name": "DeviceActivation",
+  "description": "Installation activation history, tracked separately from file downloads.",
+  "type": "object",
+  "properties": {
+    "device_id": {
+      "type": "string"
+    },
+    "nickname": {
+      "type": "string"
+    },
+    "activation_code": {
+      "type": "string"
+    },
+    "os": {
+      "type": "string"
+    },
+    "client_type": {
+      "type": "string"
+    },
+    "app_version": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string",
+      "default": "companion"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "activated",
+        "reactivated",
+        "revoked"
+      ],
+      "enumColors": [
+        "green",
+        "blue",
+        "red"
+      ],
+      "default": "activated"
+    },
+    "activated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "device_id",
+    "activated_at"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "name": "AnimationCommand",
+  "description": "A single targeted animation command with delivery and acknowledgement tracking.",
+  "type": "object",
+  "properties": {
+    "device_id": {
+      "type": "string"
+    },
+    "device_nickname": {
+      "type": "string"
+    },
+    "command_type": {
+      "type": "string",
+      "enum": [
+        "start",
+        "stop"
+      ],
+      "enumColors": [
+        "blue",
+        "gray"
+      ],
+      "default": "start"
+    },
+    "character_slug": {
+      "type": "string"
+    },
+    "character_name": {
+      "type": "string"
+    },
+    "animation": {
+      "type": "string",
+      "enum": [
+        "dance",
+        "jump",
+        "spin",
+        "wave",
+        "bounce"
+      ],
+      "enumColors": [
+        "gray",
+        "blue",
+        "purple",
+        "green",
+        "yellow"
+      ]
+    },
+    "duration_seconds": {
+      "type": "number",
+      "default": 10
+    },
+    "position": {
+      "type": "string",
+      "enum": [
+        "bottom-left",
+        "bottom-right",
+        "center",
+        "random"
+      ],
+      "enumColors": [
+        "gray",
+        "gray",
+        "gray",
+        "gray"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "delivered",
+        "acknowledged",
+        "completed",
+        "expired",
+        "stopped",
+        "rejected"
+      ],
+      "enumColors": [
+        "yellow",
+        "blue",
+        "purple",
+        "green",
+        "gray",
+        "gray",
+        "red"
+      ],
+      "default": "pending"
+    },
+    "issued_by_email": {
+      "type": "string"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "delivered_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "acknowledged_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "device_message": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "device_id",
+    "command_type",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

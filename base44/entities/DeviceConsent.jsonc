@@ -1,0 +1,72 @@
+{
+  "name": "DeviceConsent",
+  "description": "Append-only consent log for every device. Consent is checked before any command is delivered.",
+  "type": "object",
+  "properties": {
+    "device_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "granted",
+        "revoked",
+        "pending"
+      ],
+      "enumColors": [
+        "green",
+        "red",
+        "yellow"
+      ]
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "desktop",
+        "browser",
+        "admin",
+        "device_portal"
+      ],
+      "enumColors": [
+        "blue",
+        "purple",
+        "gray",
+        "gray"
+      ]
+    },
+    "changed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "note": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "device_id",
+    "status",
+    "changed_at"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

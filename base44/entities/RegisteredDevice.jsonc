@@ -1,0 +1,126 @@
+{
+  "name": "RegisteredDevice",
+  "description": "A consenting device that runs the DanceDrop companion (desktop app or browser demo).",
+  "type": "object",
+  "properties": {
+    "device_id": {
+      "type": "string",
+      "description": "Public unique device identity, e.g. DD-7F3A-91C4."
+    },
+    "nickname": {
+      "type": "string",
+      "description": "Human friendly label chosen on activation."
+    },
+    "client_type": {
+      "type": "string",
+      "enum": [
+        "desktop",
+        "browser"
+      ],
+      "enumColors": [
+        "blue",
+        "purple"
+      ],
+      "default": "desktop",
+      "description": "Which companion implementation the device runs."
+    },
+    "os": {
+      "type": "string",
+      "enum": [
+        "windows",
+        "macos",
+        "linux",
+        "chromeos",
+        "other"
+      ],
+      "enumColors": [
+        "blue",
+        "gray",
+        "yellow",
+        "purple",
+        "gray"
+      ],
+      "default": "other"
+    },
+    "os_version": {
+      "type": "string"
+    },
+    "app_version": {
+      "type": "string"
+    },
+    "screen_width": {
+      "type": "number"
+    },
+    "screen_height": {
+      "type": "number"
+    },
+    "device_pixel_ratio": {
+      "type": "number"
+    },
+    "activation_code": {
+      "type": "string",
+      "description": "Human readable activation code shown to the device owner."
+    },
+    "device_secret_hash": {
+      "type": "string",
+      "description": "SHA-256 hash of the per-device credential. The plain secret is never stored."
+    },
+    "consent_status": {
+      "type": "string",
+      "enum": [
+        "granted",
+        "revoked",
+        "pending"
+      ],
+      "enumColors": [
+        "green",
+        "red",
+        "yellow"
+      ],
+      "default": "pending"
+    },
+    "online": {
+      "type": "boolean",
+      "default": false
+    },
+    "paused": {
+      "type": "boolean",
+      "default": false
+    },
+    "revoked": {
+      "type": "boolean",
+      "default": false
+    },
+    "last_seen": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "device_id",
+    "activation_code",
+    "device_secret_hash"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

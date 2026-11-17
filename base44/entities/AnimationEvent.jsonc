@@ -1,0 +1,78 @@
+{
+  "name": "AnimationEvent",
+  "description": "Audit trail of every device, consent and command event.",
+  "type": "object",
+  "properties": {
+    "device_id": {
+      "type": "string"
+    },
+    "command_id": {
+      "type": "string"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "device_registered",
+        "device_activated",
+        "consent_granted",
+        "consent_revoked",
+        "command_created",
+        "command_delivered",
+        "command_acknowledged",
+        "command_completed",
+        "command_stopped",
+        "command_expired",
+        "command_rejected",
+        "device_disconnected",
+        "admin_revoked"
+      ],
+      "enumColors": [
+        "blue",
+        "green",
+        "green",
+        "red",
+        "orange",
+        "purple",
+        "purple",
+        "green",
+        "gray",
+        "gray",
+        "red",
+        "gray",
+        "red"
+      ]
+    },
+    "actor": {
+      "type": "string",
+      "description": "admin email, device id, or 'system'."
+    },
+    "message": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "event_type"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
