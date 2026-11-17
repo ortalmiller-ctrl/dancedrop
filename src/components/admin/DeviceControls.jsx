@@ -18,7 +18,7 @@ export default function DeviceControls({ device, characters = [], onDone }) {
   const [slug, setSlug] = useState("banana");
   const [animation, setAnimation] = useState("dance");
   const [duration, setDuration] = useState(8);
-  const [position, setPosition] = useState("bottom-right");
+  const [position, setPosition] = useState("center");
   const [previewing, setPreviewing] = useState(false);
 
   const queryClient = useQueryClient();

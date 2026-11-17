@@ -65,6 +65,9 @@ export default function CharacterLibrary() {
                   </span>
                 ))}
               </div>
+              {character.credit && (
+                <p className="mt-3 text-[10px] leading-relaxed text-white/30">{character.credit}</p>
+              )}
             </article>
           ))}
 

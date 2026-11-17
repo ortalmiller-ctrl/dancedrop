@@ -55,6 +55,9 @@ export const CHARACTERS = [
     tagline: "Coalition talks, now with choreography.",
     accent: "#22262E",
     animations: ["dance", "wave", "bounce", "jump"],
+    photo:
+      "https://media.base44.com/images/public/6afc05b2e05cb78ddc781d5f/fb16bcd1b_bibi-portrait.jpg",
+    credit: "Photo: Avi Ohayon, Government Press Office · CC BY-SA 3.0",
   },
 ];
 

@@ -12,7 +12,7 @@ const ALIGN = {
 export default function LiveDemo() {
   const [slug, setSlug] = useState("banana");
   const [animation, setAnimation] = useState("dance");
-  const [position, setPosition] = useState("bottom-right");
+  const [position, setPosition] = useState("center");
   const [playing, setPlaying] = useState(true);
 
   const character = characterBySlug(slug);

@@ -39,7 +39,7 @@ async function deviceRequest(path, body, device, method = "POST") {
 }
 
 function resolvePosition(position) {
-  if (position !== "random") return position || "bottom-right";
+  if (position !== "random") return position || "center";
   const options = ["bottom-left", "bottom-right", "center"];
   return options[Math.floor(Math.random() * options.length)];
 }

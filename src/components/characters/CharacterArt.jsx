@@ -93,16 +93,6 @@ const ART = {
       <path d="M84 118 L74 152" stroke="#3D4450" strokeWidth="6" strokeLinecap="round" />
       <path d="M116 118 L126 152" stroke="#3D4450" strokeWidth="6" strokeLinecap="round" />
       <path d="M124 150 l4 -11 l9 6 z" fill="#FF5C1A" stroke={INK} strokeWidth="3" strokeLinejoin="round" />
-      <ellipse cx="100" cy="72" rx="41" ry="43" fill="#F2C6A0" stroke={INK} strokeWidth="6" />
-      <circle cx="59" cy="77" r="7" fill="#F2C6A0" stroke={INK} strokeWidth="4" />
-      <circle cx="141" cy="77" r="7" fill="#F2C6A0" stroke={INK} strokeWidth="4" />
-      <path d="M60 62 C61 32 84 20 103 20 C125 20 141 33 142 60 C135 47 123 40 111 42 C117 46 120 51 121 55 C110 45 92 41 78 47 C68 51 62 56 60 62 Z" fill="#D8DDE2" stroke={INK} strokeWidth="5" strokeLinejoin="round" />
-      <path d="M75 63 q12 -8 23 -1" stroke="#4A4038" strokeWidth="6" strokeLinecap="round" fill="none" />
-      <path d="M103 62 q12 -7 22 1" stroke="#4A4038" strokeWidth="6" strokeLinecap="round" fill="none" />
-      <ellipse cx="86" cy="73" rx="5" ry="6.5" fill={INK} />
-      <ellipse cx="114" cy="73" rx="5" ry="6.5" fill={INK} />
-      <path d="M100 76 C95 84 93 89 97 92 C100 94.5 105 92 106 88" stroke={INK} strokeWidth="5" strokeLinecap="round" fill="none" />
-      <path d="M84 98 q16 15 33 -1" stroke={INK} strokeWidth="5" strokeLinecap="round" fill="none" />
       <g className="dd-wave-arm" style={ARM}>
         <path d="M141 130 C159 124 169 109 173 95" stroke={INK} strokeWidth="7" strokeLinecap="round" fill="none" />
         <circle cx="175" cy="90" r="9" fill="#F2C6A0" stroke={INK} strokeWidth="5" />

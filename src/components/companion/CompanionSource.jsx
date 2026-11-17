@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { Check, Copy, Download } from "lucide-react";
+import { characterBySlug } from "@/lib/characters";
+
+const BIBI_PHOTO = characterBySlug("bibi").photo;
 
 const FILES = [
   {
@@ -205,29 +208,35 @@ contextBridge.exposeInMainWorld('dancedrop', {
         return { px: Math.round(Math.min(Math.max(base * 0.26, 160), 460)) };
       }
 
+      var BIBI_PHOTO = '${BIBI_PHOTO}';
+
       function place(position) {
         var px = sizeFor(position).px;
+        var centered = position === 'center';
+        current.dataset.position = position;
         current.style.width = px + 'px';
         current.style.height = px + 'px';
         var pad = Math.round(Math.min(window.innerWidth, window.innerHeight) * 0.04);
-        current.style.left = position === 'bottom-right' ? '' : pad + 'px';
+        current.style.left = centered ? '50%' : (position === 'bottom-right' ? '' : pad + 'px');
         current.style.right = position === 'bottom-right' ? pad + 'px' : '';
-        current.style.top = position === 'center' ? '50%' : '';
-        current.style.bottom = position === 'center' ? '' : pad + 'px';
-        current.style.transform = position === 'center' ? 'translateY(-50%)' : '';
+        current.style.top = centered ? '50%' : '';
+        current.style.bottom = centered ? '' : pad + 'px';
+        current.style.transform = centered ? 'translate(-50%, -50%)' : '';
       }
 
       window.dancedrop.onPlay(function (command) {
         var position = command.position === 'random'
           ? ['bottom-left', 'bottom-right', 'center'][Math.floor(Math.random() * 3)]
-          : command.position;
+          : (command.position || 'center');
         if (current) current.remove();
         current = document.createElement('div');
         current.className = 'actor';
-        current.innerHTML = '<svg viewBox="0 0 200 200" class="dance">' +
-          '<path d="M100 22 C130 32 146 64 140 104 C134 144 120 172 100 180 C80 172 66 144 60 104 C54 64 70 32 100 22 Z" fill="#FFC53D" stroke="#141110" stroke-width="6"/>' +
-          '<circle cx="85" cy="96" r="5" fill="#141110"/><circle cx="115" cy="96" r="5" fill="#141110"/>' +
-          '</svg>';
+        current.innerHTML = command.character_slug === 'bibi'
+          ? '<img class="dance" alt="" src="' + BIBI_PHOTO + '" style="width:100%;height:100%;object-fit:contain;border-radius:50%" />'
+          : '<svg viewBox="0 0 200 200" class="dance">' +
+            '<path d="M100 22 C130 32 146 64 140 104 C134 144 120 172 100 180 C80 172 66 144 60 104 C54 64 70 32 100 22 Z" fill="#FFC53D" stroke="#141110" stroke-width="6"/>' +
+            '<circle cx="85" cy="96" r="5" fill="#141110"/><circle cx="115" cy="96" r="5" fill="#141110"/>' +
+            '</svg>';
         stage.appendChild(current);
         place(position);
       });
@@ -239,7 +248,7 @@ contextBridge.exposeInMainWorld('dancedrop', {
 
       window.addEventListener('resize', function () {
         if (!current) return;
-        place(current.dataset.position || 'bottom-right');
+        place(current.dataset.position || 'center');
       });
     </script>
   </body>
