@@ -1,7 +1,7 @@
 {
   "name": "dancedrop-companion",
   "productName": "DanceDrop",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "DanceDrop desktop companion - consent-based remote animations",
   "main": "src/main.js",
   "author": {
