@@ -1,0 +1,64 @@
+name: Build Windows installer
+
+# Produces a real, installable DanceDrop-Setup.exe with electron-builder.
+# It runs on GitHub's Windows runner because a Windows installer needs a Windows
+# toolchain; nothing is built or faked by the web app.
+#
+# INSTALL: copy this file to  .github/workflows/build-windows.yml  in the
+# repository (the app sync cannot write workflow files itself).
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  windows-installer:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: desktop
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install build dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Build the installer
+        run: npm run dist
+
+      - name: Write checksum
+        shell: pwsh
+        run: |
+          $hash = (Get-FileHash release\DanceDrop-Setup.exe -Algorithm SHA256).Hash.ToLower()
+          Write-Host "SHA256: $hash"
+          Set-Content -Path release\DanceDrop-Setup.exe.sha256 -Value "$hash  DanceDrop-Setup.exe"
+
+      - name: Upload the installer as a workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: DanceDrop-Setup
+          path: |
+            desktop/release/DanceDrop-Setup.exe
+            desktop/release/DanceDrop-Setup.exe.sha256
+          if-no-files-found: error
+
+      - name: Attach the installer to the release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            desktop/release/DanceDrop-Setup.exe
+            desktop/release/DanceDrop-Setup.exe.sha256
+          generate_release_notes: true
