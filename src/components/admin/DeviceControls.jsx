@@ -6,6 +6,7 @@ import { Loader2, Play, Square } from "lucide-react";
 import { sendAnimation, stopAnimation } from "@/lib/server-fns";
 import { ANIMATIONS, POSITIONS, animationLabel, positionLabel } from "@/lib/characters";
 import CharacterSprite from "@/components/characters/CharacterSprite";
+import useCharacterMusic from "@/hooks/useCharacterMusic";
 import { Slider } from "@/components/ui/slider";
 
 const ALIGN = {
@@ -26,6 +27,8 @@ export default function DeviceControls({ device, characters = [], onDone }) {
   const stop = useServerFn(stopAnimation);
 
   const character = characters.find((item) => item.slug === slug) || characters[0];
+
+  useCharacterMusic(previewing ? character?.slug : null, previewing);
   const blocked = device.revoked
     ? "This device is disconnected. It has to activate again first."
     : device.consent_status !== "granted"
