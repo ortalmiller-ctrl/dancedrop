@@ -49,6 +49,13 @@ export const CHARACTERS = [
     accent: "#D9A15B",
     animations: ["dance", "bounce", "jump", "spin"],
   },
+  {
+    slug: "bibi",
+    name: "Bibi",
+    tagline: "Coalition talks, now with choreography.",
+    accent: "#22262E",
+    animations: ["dance", "wave", "bounce", "jump"],
+  },
 ];
 
 export function characterBySlug(slug) {

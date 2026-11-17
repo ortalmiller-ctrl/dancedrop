@@ -13,7 +13,7 @@ export default function CharacterLibrary() {
               The cast
             </span>
             <h2 className="mt-4 font-heading text-[clamp(1.9rem,1rem+2.4vw,2.9rem)] font-bold leading-[1.08]">
-              Five idiots. Twenty moves. No dignity.
+              Six idiots. Twenty-five moves. No dignity.
             </h2>
           </div>
           <Link
