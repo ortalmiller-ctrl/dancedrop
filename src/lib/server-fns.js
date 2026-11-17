@@ -346,6 +346,89 @@ export const setCharacterEnabled = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+/* ---------------- companion releases ---------------- */
+
+export const getCompanionRelease = createServerFn({ method: "GET" })
+  .validator(z.object({ platform: z.enum(["windows", "macos"]).optional() }))
+  .handler(async ({ data, context }) => {
+    const db = context.getBase44().asServiceRole;
+    const rows = asArray(
+      await db.entities.CompanionRelease.filter({
+        platform: data.platform || "windows",
+        published: true,
+      })
+    );
+    const latest = rows.sort(
+      (a, b) =>
+        new Date(b.released_at || b.created_date || 0) - new Date(a.released_at || a.created_date || 0)
+    )[0];
+    if (!latest) return null;
+
+    return {
+      version: latest.version,
+      platform: latest.platform,
+      file_name: latest.file_name || "DanceDrop-Setup.exe",
+      file_url: latest.file_url,
+      size_bytes: latest.size_bytes || 0,
+      sha256: latest.sha256 || "",
+      notes: latest.notes || "",
+      released_at: latest.released_at || latest.created_date,
+    };
+  });
+
+export const listCompanionReleases = createServerFn({ method: "GET" })
+  .middleware([requireUser])
+  .handler(async ({ context }) => {
+    requireAdmin(context);
+    const db = context.getBase44().asServiceRole;
+    const rows = asArray(
+      await db.entities.CompanionRelease.list({ sort: "-created_date", limit: 30 })
+    );
+    return rows;
+  });
+
+export const publishCompanionRelease = createServerFn({ method: "POST" })
+  .middleware([requireUser])
+  .validator(
+    z.object({
+      version: z.string().min(1).max(20),
+      fileUrl: z.string().url().max(500),
+      fileName: z.string().max(120).optional(),
+      sizeBytes: z.number().min(0).max(2_000_000_000).optional(),
+      sha256: z.string().max(64).optional(),
+      notes: z.string().max(500).optional(),
+      published: z.boolean().optional(),
+    })
+  )
+  .handler(async ({ data, context }) => {
+    requireAdmin(context);
+    const db = context.getBase44().asServiceRole;
+
+    const record = await db.entities.CompanionRelease.create({
+      version: data.version,
+      platform: "windows",
+      file_name: data.fileName || `DanceDrop-Setup-${data.version}.exe`,
+      file_url: data.fileUrl,
+      size_bytes: data.sizeBytes || 0,
+      sha256: (data.sha256 || "").toLowerCase(),
+      notes: data.notes || "",
+      published: data.published !== false,
+      released_at: nowIso(),
+    });
+
+    return { ok: true, id: record.id };
+  });
+
+export const unpublishCompanionRelease = createServerFn({ method: "POST" })
+  .middleware([requireUser])
+  .validator(z.object({ id: z.string().min(1) }))
+  .handler(async ({ data, context }) => {
+    requireAdmin(context);
+    const db = context.getBase44().asServiceRole;
+    await db.entities.CompanionRelease.update(data.id, { published: false });
+    return { ok: true };
+  });
+
 /* ---------------- public helpers ---------------- */
 
 export const listCharacters = createServerFn({ method: "GET" }).handler(async ({ context }) => {

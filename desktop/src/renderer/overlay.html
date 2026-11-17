@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; script-src 'self'" />
+    <title>DanceDrop overlay</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: transparent;
+        overflow: hidden;
+        cursor: default;
+      }
+
+      #stage {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .actor {
+        position: absolute;
+        opacity: 0;
+        transition: opacity 180ms ease;
+        will-change: transform, opacity;
+      }
+
+      .actor.in {
+        opacity: 1;
+      }
+
+      .art,
+      .face-box {
+        position: absolute;
+        inset: 0;
+      }
+
+      .art svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+        overflow: visible;
+      }
+
+      .face {
+        position: absolute;
+        left: 29%;
+        top: 13%;
+        width: 42%;
+        height: 44%;
+        border-radius: 50%;
+        object-fit: cover;
+        object-position: center top;
+        display: none;
+      }
+
+      .actor.has-face .face {
+        display: block;
+      }
+
+      .actor.has-face .art .head-shape {
+        opacity: 0;
+      }
+
+      /* movement of the whole character */
+      @keyframes dd-dance {
+        0%, 100% { transform: rotate(-7deg) translateY(0); }
+        25% { transform: rotate(5deg) translateY(-5%); }
+        50% { transform: rotate(7deg) translateY(0); }
+        75% { transform: rotate(-5deg) translateY(-5%); }
+      }
+      @keyframes dd-jump {
+        0%, 100% { transform: translateY(0) scale(1.05, 0.95); }
+        18% { transform: translateY(0) scale(1.1, 0.9); }
+        55% { transform: translateY(-32%) scale(0.94, 1.08); }
+        92% { transform: translateY(0) scale(1.1, 0.9); }
+      }
+      @keyframes dd-spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      @keyframes dd-wave {
+        0%, 100% { transform: rotate(0deg); }
+        30% { transform: rotate(12deg); }
+        70% { transform: rotate(-8deg); }
+      }
+      @keyframes dd-bounce {
+        0%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-22%); }
+        60% { transform: translateY(-10%); }
+      }
+      @keyframes dd-arm-swing {
+        0%, 100% { transform: rotate(-16deg); }
+        50% { transform: rotate(26deg); }
+      }
+      @keyframes dd-arm-wave {
+        0%, 100% { transform: rotate(-46deg); }
+        50% { transform: rotate(18deg); }
+      }
+
+      .anim { animation-duration: 1.1s; animation-iteration-count: infinite; animation-timing-function: ease-in-out; transform-origin: 50% 92%; }
+      .anim-dance { animation-name: dd-dance; }
+      .anim-jump { animation-name: dd-jump; animation-duration: 0.95s; }
+      .anim-spin { animation-name: dd-spin; animation-duration: 1.6s; animation-timing-function: linear; transform-origin: 50% 50%; }
+      .anim-wave { animation-name: dd-wave; animation-duration: 1.4s; }
+      .anim-bounce { animation-name: dd-bounce; animation-duration: 0.9s; }
+
+      .dd-arm {
+        transform-origin: 50% 22%;
+        animation: dd-arm-swing 1.1s ease-in-out infinite;
+      }
+      .dd-wave-arm {
+        transform-origin: 50% 22%;
+        animation: dd-arm-wave 0.8s ease-in-out infinite;
+      }
+
+      .actor::after {
+        content: "";
+        position: absolute;
+        inset: auto 8% 2% 8%;
+        height: 10%;
+        border-radius: 999px;
+        background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.25), transparent 70%);
+        filter: blur(6px);
+        z-index: -1;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .anim,
+        .dd-arm,
+        .dd-wave-arm {
+          animation: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stage"></div>
+    <script src="characters.js"></script>
+    <script src="overlay.js"></script>
+  </body>
+</html>

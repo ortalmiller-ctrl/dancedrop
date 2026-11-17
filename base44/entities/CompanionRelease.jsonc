@@ -1,0 +1,73 @@
+{
+  "name": "CompanionRelease",
+  "description": "A published desktop companion installer. The website's download button serves the newest published release for a platform.",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Release version, e.g. 1.0.0."
+    },
+    "platform": {
+      "type": "string",
+      "enum": [
+        "windows",
+        "macos"
+      ],
+      "enumColors": [
+        "blue",
+        "gray"
+      ],
+      "default": "windows"
+    },
+    "file_name": {
+      "type": "string",
+      "description": "Name the visitor sees, e.g. DanceDrop-Setup-1.0.0.exe."
+    },
+    "file_url": {
+      "type": "string",
+      "description": "Direct download URL of the installer (GitHub Release asset or app storage file)."
+    },
+    "size_bytes": {
+      "type": "number"
+    },
+    "sha256": {
+      "type": "string",
+      "description": "SHA-256 of the installer, so the download can be verified."
+    },
+    "notes": {
+      "type": "string"
+    },
+    "published": {
+      "type": "boolean",
+      "default": true,
+      "description": "Only published releases are offered on the website."
+    },
+    "released_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "version",
+    "platform",
+    "file_url"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,6 +1,15 @@
 import { useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
-import { Activity, LayoutDashboard, LogOut, Menu, MonitorSmartphone, Sparkles, X } from "lucide-react";
+import {
+  Activity,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  MonitorSmartphone,
+  PackageOpen,
+  Sparkles,
+  X,
+} from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
 
 const NAV = [
@@ -8,6 +17,7 @@ const NAV = [
   { to: "/devices", label: "Devices", icon: MonitorSmartphone },
   { to: "/activity", label: "Activity", icon: Activity },
   { to: "/characters", label: "Characters", icon: Sparkles },
+  { to: "/release", label: "Installer", icon: PackageOpen },
 ];
 
 export default function AdminShell({ children }) {
