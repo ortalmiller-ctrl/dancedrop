@@ -8,9 +8,25 @@ import { Label } from "@/components/ui/label";
 import {
   listCompanionReleases,
   publishCompanionRelease,
-  unpublishCompanionRelease,
+  setCompanionReleasePublished,
 } from "@/lib/server-fns";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { formatDateTime } from "@/lib/format";
+
+const EMPTY_FORM = {
+  version: "",
+  fileUrl: "",
+  fileName: "",
+  sizeMb: "",
+  sha256: "",
+  status: "live",
+};
 
 export const Route = createFileRoute("/_authed/release")({
   ssr: false,
@@ -21,13 +37,13 @@ export const Route = createFileRoute("/_authed/release")({
 function ReleasePage() {
   const load = useServerFn(listCompanionReleases);
   const publish = useServerFn(publishCompanionRelease);
-  const unpublish = useServerFn(unpublishCompanionRelease);
+  const setPublished = useServerFn(setCompanionReleasePublished);
 
   const [releases, setReleases] = useState(null);
-  const [form, setForm] = useState({ version: "", fileUrl: "", fileName: "", sizeMb: "", sha256: "" });
+  const [form, setForm] = useState(EMPTY_FORM);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [saved, setSaved] = useState(false);
+  const [savedStatus, setSavedStatus] = useState("");
 
   const refresh = () => load().then(setReleases);
 
@@ -41,7 +57,7 @@ function ReleasePage() {
     event.preventDefault();
     setBusy(true);
     setError("");
-    setSaved(false);
+    setSavedStatus("");
     try {
       const sizeMb = Number(form.sizeMb);
       await publish({
@@ -51,10 +67,11 @@ function ReleasePage() {
           fileName: form.fileName.trim() || undefined,
           sizeBytes: Number.isFinite(sizeMb) && sizeMb > 0 ? Math.round(sizeMb * 1024 * 1024) : undefined,
           sha256: form.sha256.trim() || undefined,
+          published: form.status !== "hidden",
         },
       });
-      setForm({ version: "", fileUrl: "", fileName: "", sizeMb: "", sha256: "" });
-      setSaved(true);
+      setSavedStatus(form.status);
+      setForm(EMPTY_FORM);
       await refresh();
     } catch (err) {
       setError(err.message || "Could not publish this release");
@@ -105,6 +122,10 @@ function ReleasePage() {
               value={form.fileUrl}
               onChange={update("fileUrl")}
             />
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              Paste the direct asset link from the GitHub release, the one ending in{" "}
+              <span className="font-medium">.exe</span>. A ZIP or an Actions run page is refused.
+            </p>
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="sizeMb">Size (MB)</Label>
@@ -114,18 +135,36 @@ function ReleasePage() {
             <Label htmlFor="sha256">SHA-256 (optional)</Label>
             <Input id="sha256" placeholder="hash printed by the build" value={form.sha256} onChange={update("sha256")} />
           </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="status">Release status</Label>
+            <Select
+              value={form.status}
+              onValueChange={(value) => setForm({ ...form, status: value })}
+            >
+              <SelectTrigger id="status">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="live">Live — the website serves it now</SelectItem>
+                <SelectItem value="hidden">Hidden — save without showing it</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {error && <p className="mt-4 text-sm text-destructive">{error}</p>}
-        {saved && (
+        {savedStatus && (
           <p className="mt-4 flex items-center gap-1.5 text-sm text-emerald-600">
-            <CheckCircle2 className="h-4 w-4" /> Published. The download button now serves it.
+            <CheckCircle2 className="h-4 w-4" />
+            {savedStatus === "hidden"
+              ? "Saved as hidden. The website still says the download is coming soon."
+              : "Published. The download button now serves it."}
           </p>
         )}
 
         <Button type="submit" disabled={busy} className="mt-5">
           {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Publish release
+          {form.status === "hidden" ? "Save as hidden" : "Publish release"}
         </Button>
       </form>
 
@@ -161,18 +200,16 @@ function ReleasePage() {
                     {release.released_at ? formatDateTime(release.released_at) : ""}
                   </p>
                 </div>
-                {release.published && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={async () => {
-                      await unpublish({ data: { id: release.id } });
-                      refresh();
-                    }}
-                  >
-                    Hide
-                  </Button>
-                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={async () => {
+                    await setPublished({ data: { id: release.id, published: !release.published } });
+                    refresh();
+                  }}
+                >
+                  {release.published ? "Hide" : "Publish"}
+                </Button>
               </li>
             ))}
           </ul>

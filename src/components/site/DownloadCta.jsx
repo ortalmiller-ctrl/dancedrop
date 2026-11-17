@@ -42,8 +42,8 @@ export default function DownloadCta({ onTrack }) {
               </Link>
             </div>
             <p className="mt-5 text-xs text-white/70">
-              Developer preview: the companion source and API contract ship today, the signed
-              installer is not published yet.
+              Windows 10/11, 64-bit. Installation and consent stay separate, so the overlay only runs
+              on screens that opted in.
             </p>
           </div>
         </div>

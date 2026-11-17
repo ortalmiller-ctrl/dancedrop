@@ -3,7 +3,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getCompanionRelease, trackDownload } from "@/lib/server-fns";
-import PendingBuildDialog from "@/components/companion/PendingBuildDialog";
 
 function detectPlatform() {
   const ua = navigator.userAgent.toLowerCase();
@@ -21,7 +20,6 @@ function formatSize(bytes) {
 
 export default function DownloadActions({ variant = "solid" }) {
   const [release, setRelease] = useState(undefined);
-  const [pendingOpen, setPendingOpen] = useState(false);
   const load = useServerFn(getCompanionRelease);
   const track = useServerFn(trackDownload);
 
@@ -78,25 +76,18 @@ export default function DownloadActions({ variant = "solid" }) {
 
   return (
     <div>
-      <Button
-        onClick={() => (release === null ? setPendingOpen(true) : null)}
-        disabled={release === undefined}
-        size="lg"
-        variant={buttonVariant}
-        className={className}
-      >
+      <Button disabled size="lg" variant={buttonVariant} className={className}>
         {release === undefined ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
           <Download className="mr-2 h-4 w-4" />
         )}
-        {release === undefined ? "Checking installer" : "Download for Windows"}
+        {release === undefined ? "Checking installer" : "Windows download coming soon"}
       </Button>
       <p className={`mt-3 text-xs leading-relaxed ${metaClass}`}>
-        Windows 10/11, 64-bit. A normal installer: double-click, install, and the app asks for consent
-        on first launch.
+        Windows 10/11, 64-bit. This button starts downloading the installer as soon as a verified
+        release is published.
       </p>
-      <PendingBuildDialog open={pendingOpen} onOpenChange={setPendingOpen} />
     </div>
   );
 }

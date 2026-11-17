@@ -34,6 +34,27 @@ function fail(message, status = 400) {
   return error;
 }
 
+function parseInstallerUrl(rawUrl) {
+  let parsed;
+  try {
+    parsed = new URL(rawUrl);
+  } catch {
+    throw fail("Paste the full https link to the installer file");
+  }
+  if (parsed.protocol !== "https:") throw fail("The installer link must start with https://");
+  const path = parsed.pathname.toLowerCase();
+  if (path.endsWith(".zip")) {
+    throw fail("That link is a ZIP archive. Paste the direct .exe download link instead.");
+  }
+  if (path.includes("/actions/runs/") || path.includes("/artifacts")) {
+    throw fail("That is a GitHub Actions page, not a file. Open the release and copy the asset link that ends in .exe.");
+  }
+  if (!path.endsWith(".exe")) {
+    throw fail("The link must point directly to the .exe file, so it has to end with .exe.");
+  }
+  return parsed;
+}
+
 function shapeDevice(device, latestCommand) {
   return {
     id: device.id,
@@ -358,10 +379,19 @@ export const getCompanionRelease = createServerFn({ method: "GET" })
         published: true,
       })
     );
-    const latest = rows.sort(
-      (a, b) =>
-        new Date(b.released_at || b.created_date || 0) - new Date(a.released_at || a.created_date || 0)
-    )[0];
+    const latest = rows
+      .filter((release) => {
+        try {
+          const parsed = new URL(release.file_url);
+          return parsed.protocol === "https:" && parsed.pathname.toLowerCase().endsWith(".exe");
+        } catch {
+          return false;
+        }
+      })
+      .sort(
+        (a, b) =>
+          new Date(b.released_at || b.created_date || 0) - new Date(a.released_at || a.created_date || 0)
+      )[0];
     if (!latest) return null;
 
     return {
@@ -404,11 +434,15 @@ export const publishCompanionRelease = createServerFn({ method: "POST" })
     requireAdmin(context);
     const db = context.getBase44().asServiceRole;
 
+    const parsedUrl = parseInstallerUrl(data.fileUrl);
+    const rawName = (data.fileName || "").trim() || "DanceDrop-Setup.exe";
+    const fileName = rawName.toLowerCase().endsWith(".exe") ? rawName : `${rawName}.exe`;
+
     const record = await db.entities.CompanionRelease.create({
       version: data.version,
       platform: "windows",
-      file_name: data.fileName || `DanceDrop-Setup-${data.version}.exe`,
-      file_url: data.fileUrl,
+      file_name: fileName,
+      file_url: parsedUrl.toString(),
       size_bytes: data.sizeBytes || 0,
       sha256: (data.sha256 || "").toLowerCase(),
       notes: data.notes || "",
@@ -419,14 +453,14 @@ export const publishCompanionRelease = createServerFn({ method: "POST" })
     return { ok: true, id: record.id };
   });
 
-export const unpublishCompanionRelease = createServerFn({ method: "POST" })
+export const setCompanionReleasePublished = createServerFn({ method: "POST" })
   .middleware([requireUser])
-  .validator(z.object({ id: z.string().min(1) }))
+  .validator(z.object({ id: z.string().min(1), published: z.boolean() }))
   .handler(async ({ data, context }) => {
     requireAdmin(context);
     const db = context.getBase44().asServiceRole;
-    await db.entities.CompanionRelease.update(data.id, { published: false });
-    return { ok: true };
+    await db.entities.CompanionRelease.update(data.id, { published: data.published });
+    return { ok: true, published: data.published };
   });
 
 /* ---------------- public helpers ---------------- */
