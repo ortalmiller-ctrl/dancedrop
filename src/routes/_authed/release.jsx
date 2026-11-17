@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { formatDateTime } from "@/lib/format";
+import { base44 } from "@/api/base44Client";
 
 const EMPTY_FORM = {
   version: "",
@@ -41,6 +42,7 @@ function ReleasePage() {
 
   const [releases, setReleases] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
+  const [uploadedFile, setUploadedFile] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [savedStatus, setSavedStatus] = useState("");
@@ -60,18 +62,30 @@ function ReleasePage() {
     setSavedStatus("");
     try {
       const sizeMb = Number(form.sizeMb);
+      let fileUrl = form.fileUrl.trim();
+      let fileName = form.fileName.trim();
+      let sizeBytes = Number.isFinite(sizeMb) && sizeMb > 0 ? Math.round(sizeMb * 1024 * 1024) : undefined;
+
+      if (uploadedFile) {
+        const result = await base44.integrations.Core.UploadPublicFile({ file: uploadedFile });
+        fileUrl = result.file_url;
+        fileName = fileName || uploadedFile.name;
+        sizeBytes = uploadedFile.size;
+      }
+
       await publish({
         data: {
           version: form.version.trim(),
-          fileUrl: form.fileUrl.trim(),
-          fileName: form.fileName.trim() || undefined,
-          sizeBytes: Number.isFinite(sizeMb) && sizeMb > 0 ? Math.round(sizeMb * 1024 * 1024) : undefined,
+          fileUrl,
+          fileName: fileName || undefined,
+          sizeBytes,
           sha256: form.sha256.trim() || undefined,
           published: form.status !== "hidden",
         },
       });
       setSavedStatus(form.status);
       setForm(EMPTY_FORM);
+      setUploadedFile(null);
       await refresh();
     } catch (err) {
       setError(err.message || "Could not publish this release");
@@ -113,10 +127,10 @@ function ReleasePage() {
             />
           </div>
           <div className="space-y-1.5 sm:col-span-2">
-            <Label htmlFor="fileUrl">Installer URL</Label>
+            <Label htmlFor="fileUrl">Installer URL (or upload a file below)</Label>
             <Input
               id="fileUrl"
-              required
+              required={!uploadedFile}
               type="url"
               placeholder="https://github.com/owner/repo/releases/latest/download/DanceDrop-Setup.exe"
               value={form.fileUrl}
@@ -125,6 +139,19 @@ function ReleasePage() {
             <p className="text-xs leading-relaxed text-muted-foreground">
               Paste the direct asset link from the GitHub release, the one ending in{" "}
               <span className="font-medium">.exe</span>. A ZIP or an Actions run page is refused.
+            </p>
+          </div>
+          <div className="space-y-1.5 sm:col-span-2">
+            <Label htmlFor="installerFile">Or upload the installer</Label>
+            <Input
+              id="installerFile"
+              type="file"
+              accept=".exe,application/octet-stream"
+              onChange={(event) => setUploadedFile(event.target.files?.[0] || null)}
+            />
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              Pick the .exe from your build folder and it is hosted here, so the download works even
+              while the GitHub repo stays private.
             </p>
           </div>
           <div className="space-y-1.5">

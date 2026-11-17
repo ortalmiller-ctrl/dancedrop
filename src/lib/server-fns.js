@@ -34,6 +34,20 @@ function fail(message, status = 400) {
   return error;
 }
 
+const APP_STORAGE_HOSTS = new Set(["media.base44.com", "static.wixstatic.com"]);
+
+function isInstallerUrl(rawUrl) {
+  try {
+    const parsed = new URL(rawUrl);
+    return (
+      parsed.protocol === "https:" &&
+      (parsed.pathname.toLowerCase().endsWith(".exe") || APP_STORAGE_HOSTS.has(parsed.hostname))
+    );
+  } catch {
+    return false;
+  }
+}
+
 function parseInstallerUrl(rawUrl) {
   let parsed;
   try {
@@ -42,6 +56,7 @@ function parseInstallerUrl(rawUrl) {
     throw fail("Paste the full https link to the installer file");
   }
   if (parsed.protocol !== "https:") throw fail("The installer link must start with https://");
+  if (APP_STORAGE_HOSTS.has(parsed.hostname)) return parsed;
   const path = parsed.pathname.toLowerCase();
   if (path.endsWith(".zip")) {
     throw fail("That link is a ZIP archive. Paste the direct .exe download link instead.");
@@ -380,14 +395,7 @@ export const getCompanionRelease = createServerFn({ method: "GET" })
       })
     );
     const latest = rows
-      .filter((release) => {
-        try {
-          const parsed = new URL(release.file_url);
-          return parsed.protocol === "https:" && parsed.pathname.toLowerCase().endsWith(".exe");
-        } catch {
-          return false;
-        }
-      })
+      .filter((release) => isInstallerUrl(release.file_url))
       .sort(
         (a, b) =>
           new Date(b.released_at || b.created_date || 0) - new Date(a.released_at || a.created_date || 0)
@@ -422,7 +430,7 @@ export const publishCompanionRelease = createServerFn({ method: "POST" })
   .validator(
     z.object({
       version: z.string().min(1).max(20),
-      fileUrl: z.string().url().max(500),
+      fileUrl: z.string().min(1).max(500),
       fileName: z.string().max(120).optional(),
       sizeBytes: z.number().min(0).max(2_000_000_000).optional(),
       sha256: z.string().max(64).optional(),
