@@ -40,8 +40,8 @@ function createFor(display) {
   win.setIgnoreMouseEvents(true, { forward: true });
   win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
   win.loadFile(path.join(__dirname, 'renderer', 'overlay.html'));
-  win.once('ready-to-show', function () {
-    win.showInactive();
+  win.webContents.once('did-finish-load', function () {
+    if (!win.isDestroyed()) win.showInactive();
   });
 
   return win;

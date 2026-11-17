@@ -1,6 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Lock, Monitor, ShieldCheck, Waypoints } from "lucide-react";
-import CompanionSource from "@/components/companion/CompanionSource";
+
+const BUILD_STEPS = [
+  {
+    title: "Copy the workflow",
+    body: "The complete Electron app is in the repository's desktop folder, next to desktop/build-windows.yml. GitHub does not let the app sync write workflow files, so that one file is copied to .github/workflows/build-windows.yml once.",
+  },
+  {
+    title: "Run the Windows build",
+    body: "Actions, then Build Windows installer, then Run workflow. It compiles with electron-builder on windows-latest and attaches DanceDrop-Setup.exe, plus its SHA-256, to the release.",
+  },
+  {
+    title: "Publish the installer",
+    body: "Paste the installer URL on the admin Installer page. The website's Download button then serves that real file; until a release exists it says the installer is not published.",
+  },
+];
 
 export const Route = createFileRoute("/_site/desktop-app")({
   head: () => ({
@@ -86,8 +100,9 @@ function DesktopAppPage() {
           The desktop client, in the open.
         </h1>
         <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-white/60">
-          DanceDrop does not ship a signed installer today, so this page gives you the thing that
-          actually matters: the architecture, the device API contract and the Electron source. The
+          The desktop client is real Electron source: an activation window, a tray icon, and a
+          click-through overlay drawn on top of other Windows applications. A Windows installer has to be
+          compiled on Windows, so it is built by a GitHub Actions step rather than by this website. The
           browser companion runs the same protocol, for real, against the same backend.
         </p>
 
@@ -139,10 +154,11 @@ function DesktopAppPage() {
         <div className="mt-14">
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
-              <h2 className="font-heading text-xl font-semibold">Electron source</h2>
+              <h2 className="font-heading text-xl font-semibold">How the installer gets built</h2>
               <p className="mt-2 max-w-2xl text-sm text-white/50">
-                Copy or download each file into a folder, run npm install, then npm start. Point
-                DANCEDROP_API at this app's URL.
+                Three steps, all of them outside this website. Nobody has to install Node.js or any
+                developer tool: the build machine does that, and people who download get only the
+                installer.
               </p>
             </div>
             <Link
@@ -152,9 +168,15 @@ function DesktopAppPage() {
               Try the browser client
             </Link>
           </div>
-          <div className="mt-5">
-            <CompanionSource />
-          </div>
+          <ol className="mt-5 grid gap-3 sm:grid-cols-3">
+            {BUILD_STEPS.map((step, index) => (
+              <li key={step.title} className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+                <span className="font-mono text-[11px] text-primary">0{index + 1}</span>
+                <p className="mt-2 font-heading text-sm font-semibold">{step.title}</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-white/50">{step.body}</p>
+              </li>
+            ))}
+          </ol>
         </div>
 
         <div className="mt-12 rounded-2xl border border-primary/30 bg-primary/[0.07] p-6">
