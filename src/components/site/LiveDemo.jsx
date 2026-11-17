@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Play, Square, MousePointer2 } from "lucide-react";
 import CharacterSprite from "@/components/characters/CharacterSprite";
+import useCharacterMusic from "@/hooks/useCharacterMusic";
 import { ANIMATIONS, CHARACTERS, POSITIONS, characterBySlug } from "@/lib/characters";
 
 const ALIGN = {
@@ -16,6 +17,8 @@ export default function LiveDemo() {
   const [playing, setPlaying] = useState(true);
 
   const character = characterBySlug(slug);
+
+  useCharacterMusic(slug, playing);
 
   return (
     <section className="bg-white">
