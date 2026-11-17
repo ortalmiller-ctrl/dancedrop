@@ -8,7 +8,7 @@ import DeviceTable from "@/components/admin/DeviceTable";
 import { listDevices } from "@/lib/server-fns";
 import useRealtimeRefresh from "@/hooks/useRealtimeRefresh";
 
-export const Route = createFileRoute("/_authed/devices")({
+export const Route = createFileRoute("/_authed/devices/")({
   head: () => ({ meta: [{ title: "Devices · DanceDrop admin" }] }),
   component: DevicesPage,
 });
