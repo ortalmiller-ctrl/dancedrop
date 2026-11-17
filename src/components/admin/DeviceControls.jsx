@@ -6,7 +6,6 @@ import { Loader2, Play, Square } from "lucide-react";
 import { sendAnimation, stopAnimation } from "@/lib/server-fns";
 import { ANIMATIONS, POSITIONS, animationLabel, positionLabel } from "@/lib/characters";
 import CharacterSprite from "@/components/characters/CharacterSprite";
-import useCharacterMusic from "@/hooks/useCharacterMusic";
 import { Slider } from "@/components/ui/slider";
 
 const ALIGN = {
@@ -20,7 +19,6 @@ export default function DeviceControls({ device, characters = [], onDone }) {
   const [animation, setAnimation] = useState("dance");
   const [duration, setDuration] = useState(8);
   const [position, setPosition] = useState("center");
-  const [previewing, setPreviewing] = useState(false);
 
   const queryClient = useQueryClient();
   const send = useServerFn(sendAnimation);
@@ -28,7 +26,6 @@ export default function DeviceControls({ device, characters = [], onDone }) {
 
   const character = characters.find((item) => item.slug === slug) || characters[0];
 
-  useCharacterMusic(previewing ? character?.slug : null, previewing);
   const blocked = device.revoked
     ? "This device is disconnected. It has to activate again first."
     : device.consent_status !== "granted"
@@ -71,8 +68,6 @@ export default function DeviceControls({ device, characters = [], onDone }) {
       durationSeconds: duration,
       position,
     });
-    setPreviewing(true);
-    setTimeout(() => setPreviewing(false), duration * 1000);
   };
 
   return (
@@ -216,8 +211,8 @@ export default function DeviceControls({ device, characters = [], onDone }) {
           </div>
         </div>
         <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
-          Preview renders locally. The command only reaches the device once its next heartbeat picks it
-          up, and only if consent is still granted at that moment.
+          This local preview is silent. Theme music plays only on the receiving device, when it picks
+          up the command and consent is still granted.
         </p>
       </div>
     </div>

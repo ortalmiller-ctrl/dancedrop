@@ -33,6 +33,9 @@ function createFor(display) {
       nodeIntegration: false,
       sandbox: false,
       backgroundThrottling: false,
+      // This click-through window cannot receive a user gesture. Commands are
+      // already accepted only after the device owner grants consent.
+      autoplayPolicy: 'no-user-gesture-required',
     },
   });
 
