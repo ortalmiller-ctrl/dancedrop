@@ -1,4 +1,5 @@
 import CharacterSprite from "@/components/characters/CharacterSprite";
+import useCharacterMusic from "@/hooks/useCharacterMusic";
 
 const ALIGN = {
   "bottom-left": "items-end justify-start",
@@ -7,6 +8,7 @@ const ALIGN = {
 };
 
 export default function RemoteOverlay({ active }) {
+  useCharacterMusic(active?.slug);
   if (!active) return null;
 
   return (

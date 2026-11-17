@@ -7,6 +7,23 @@ const ANIMATIONS = ['dance', 'jump', 'spin', 'wave', 'bounce'];
 
 let current = null;
 let hideTimer = null;
+let music = null;
+
+function stopMusic() {
+  if (!music) return;
+  music.pause();
+  music.src = '';
+  music = null;
+}
+
+function playMusic(track) {
+  stopMusic();
+  if (!track) return;
+  music = new Audio(track);
+  music.volume = 0.85;
+  const attempt = music.play();
+  if (attempt && attempt.catch) attempt.catch(function () {});
+}
 
 function characterFor(slug) {
   for (let i = 0; i < CHARACTERS.length; i += 1) {
@@ -57,6 +74,7 @@ function place(actor, position) {
 function clear(immediate) {
   clearTimeout(hideTimer);
   hideTimer = null;
+  stopMusic();
   if (!current) return;
   const actor = current;
   current = null;
@@ -100,6 +118,8 @@ function play(payload) {
   place(actor, command.position);
   stage.appendChild(actor);
   current = actor;
+
+  playMusic(character.music);
 
   requestAnimationFrame(function () {
     actor.classList.add('in');

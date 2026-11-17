@@ -57,6 +57,8 @@ export const CHARACTERS = [
     animations: ["dance", "wave", "bounce", "jump"],
     photo:
       "https://media.base44.com/images/public/6afc05b2e05cb78ddc781d5f/fb16bcd1b_bibi-portrait.jpg",
+    music:
+      "https://base44.app/api/apps/6afc05b2e05cb78ddc781d5f/files/mp/public/6afc05b2e05cb78ddc781d5f/4ddf3bb22_bibi-theme.mp3",
     credit: "Photo: Avi Ohayon, Government Press Office · CC BY-SA 3.0",
   },
 ];

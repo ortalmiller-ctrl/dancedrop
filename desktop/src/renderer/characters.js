@@ -120,6 +120,11 @@ const FACES = {
   bibi: 'https://media.base44.com/images/public/6afc05b2e05cb78ddc781d5f/fb16bcd1b_bibi-portrait.jpg',
 };
 
+// Characters that arrive with their own theme music.
+const MUSIC = {
+  bibi: 'https://base44.app/api/apps/6afc05b2e05cb78ddc781d5f/files/mp/public/6afc05b2e05cb78ddc781d5f/4ddf3bb22_bibi-theme.mp3',
+};
+
 window.DD_CHARACTERS = Object.keys(ART).map(function (slug) {
-  return { slug: slug, art: ART[slug], face: FACES[slug] || '' };
+  return { slug: slug, art: ART[slug], face: FACES[slug] || '', music: MUSIC[slug] || '' };
 });
